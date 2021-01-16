@@ -1,10 +1,8 @@
-
 name: dev
 
 on:
   push:
     branches: [dev]
-  
 
 jobs:
   build:
@@ -13,7 +11,6 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
       - uses: actions/checkout@v2
@@ -23,5 +20,3 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: yarn
       - run: pm2 restart testCicd
-      # - run: yarn build --if-present
-      # - run: yarn test
