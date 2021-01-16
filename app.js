@@ -3,7 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+var mongoose = require('mongoose');
+const User = require("./models/users")
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -19,8 +20,38 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+
+
+
+
+//Set up default mongoose connection
+var mongoDB = 'mongodb://127.0.0.1/my_database_test';
+mongoose.connect(mongoDB, { useNewUrlParser: true });
+ //Get the default connection
+var db = mongoose.connection;
+//Bind connection to error event (to get notification of connection errors)
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+app.use("/add/user",(req,res)=>{
+
+  let {name} = req.body
+  new User({name}).save().then(result=>{
+    return res.send(result)
+  }).catch(err=>{
+    res.status(400).send(err)
+  })
+})
+
+app.use("/test",(req,res)=>{
+  res.send({a:process.env.MONGODB_URL})
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
